@@ -6,27 +6,38 @@ declare auto BBjImage img!
 
 sg!             = BBjAPI().openSysGui("X0")
 
-wnd!            = sg!.addWindow(10,10,500,600,"QR Demo",$00000002$)
+if info(3,6)="5" then
+    wnd!        = sg!.addWindow(10,10,500,600,"QR Demo",$01001010$)
+    top = 100
+    left = BBjAPI().getSysGui().getSystemMetrics().getScreenSize().getWidth()/2-250
+else
+    wnd!        = sg!.addWindow(10,10,500,600,"QR Demo",$00000012$)
+fi
 wnd!            .setCallback(BBjAPI.ON_CLOSE,"byebye")
 
-wnd!            .addStaticText(100,50,15,400,25,"Text:","")
-ed_txt!         = wnd!.addEditBox(101,80,10,280,25,"https://www.basis.com")
+st!             = wnd!.addStaticText(100,left+50,top+15,400,25,"Text:","")
+ed_txt!         = wnd!.addEditBox(101,left+80,top+10,280,25,"https://www.basis.com")
 
-btn_update!     = wnd!.addButton(102,380,10,80,25,"Update")
+btn_update!     = wnd!.addButton(102,left+380,top+10,80,25,"Update")
 btn_update!     .setCallback(BBjAPI.ON_BUTTON_PUSH,"show_img")
 
-btn_png!        = wnd!.addButton(103,50,480,120,25,"Save PNG")
+btn_png!        = wnd!.addButton(103,left+50,top+480,120,25,"Save PNG")
 btn_png!        .setCallback(BBjAPI.ON_BUTTON_PUSH,"save_png")
+
+wnd!            .setBackColor(BBjColor.WHITE)
+st!             .setOpaque(false)
 
 
 rem this should work after this one got resolved:
 rem https://bugzilla.basis.com/show_bug.cgi?id=32703
 rem Bug 32703 - CLIPFROMSTR and CLIPFROMFILE fail on PNG file format
 
-rem btn_clip!   = wnd!.addButton(104,190,480,120,25,"Copy to Clipboard")
+rem btn_clip!   = wnd!.addButton(104,left+190,480,120,25,"Copy to Clipboard")
 rem btn_clip!   .setCallback(BBjAPI.ON_BUTTON_PUSH,"copy_clipboard")
 
 gosub show_img
+
+wnd!.setVisible(1)
 
 process_events
 
@@ -41,7 +52,7 @@ show_img:
     if ctrl_img! <> null()then 
         ctrl_img!.destroy()
     fi
-    ctrl_img! = wnd!.addImageCtrl(400,50,50,400,400,img!)
+    ctrl_img! = wnd!.addImageCtrl(400,left+50,top+50,400,400,img!)
 return
 
 copy_clipboard:
