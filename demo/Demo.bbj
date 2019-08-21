@@ -36,7 +36,7 @@ byebye:
 
 show_img:
     string$ = ed_txt!.getText() 
-    bytes! = QRCodes.getQRCode(string$,400,400)
+    bytes! = QRCodes.getQRCode(string$,400,400,err=generation_error)
     img! = sg!.getImageManager().loadImageFromBytes(bytes!)
     if ctrl_img! <> null()then 
         ctrl_img!.destroy()
@@ -74,3 +74,7 @@ createpngfile:
      write (ch) bytes!
      close (ch)
 return
+
+generation_error:
+    a=msgbox(errmes(-1),48,"Error")
+goto byebye

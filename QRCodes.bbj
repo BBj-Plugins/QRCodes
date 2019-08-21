@@ -16,7 +16,7 @@ class public QRCodes
 
         c! = Class.forName("com.google.zxing.qrcode.QRCodeWriter",err=*next)
         if c! = null() then
-            classloader! = new com.basiscomponents.util.JarLoader()
+            classloader! = new com.basiscomponents.util.JarLoader(err=classpath_err)
             classloader!.addFile(BBjAPI().getFileSystem().resolvePath("QRCodes/lib/core-3.3.0.jar"))
             classloader!.addFile(BBjAPI().getFileSystem().resolvePath("QRCodes/lib/javase-3.3.0.jar"))
             c! = classloader!.loadClass("com.google.zxing.qrcode.QRCodeWriter")
@@ -43,6 +43,8 @@ class public QRCodes
         
         methodret pngOutputStream!.toByteArray()
         
+        classpath_err:
+            throw "Add the two .jar files in the lib subfolder of this plugin to your classpath or update to a recent 19.20ff BBj version so they can be loaded dynamically!",252
     
     methodend
 
