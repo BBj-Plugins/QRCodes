@@ -1,0 +1,76 @@
+? 'HIDE'
+
+use ::QRCodes/QRCodes.bbj::QRCodes
+
+declare auto BBjImage img!
+
+sg!             = BBjAPI().openSysGui("X0")
+
+wnd!            = sg!.addWindow(10,10,500,600,"QR Demo",$00000002$)
+wnd!            .setCallback(BBjAPI.ON_CLOSE,"byebye")
+
+wnd!            .addStaticText(100,50,15,400,25,"Text:","")
+ed_txt!         = wnd!.addEditBox(101,80,10,280,25,"https://www.basis.com")
+
+btn_update!     = wnd!.addButton(102,380,10,80,25,"Update")
+btn_update!     .setCallback(BBjAPI.ON_BUTTON_PUSH,"show_img")
+
+btn_png!        = wnd!.addButton(103,50,480,120,25,"Save PNG")
+btn_png!        .setCallback(BBjAPI.ON_BUTTON_PUSH,"save_png")
+
+
+rem this should work after this one got resolved:
+rem https://bugzilla.basis.com/show_bug.cgi?id=32703
+rem Bug 32703 - CLIPFROMSTR and CLIPFROMFILE fail on PNG file format
+
+rem btn_clip!   = wnd!.addButton(104,190,480,120,25,"Copy to Clipboard")
+rem btn_clip!   .setCallback(BBjAPI.ON_BUTTON_PUSH,"copy_clipboard")
+
+gosub show_img
+
+process_events
+
+byebye:
+    bye
+
+
+show_img:
+    string$ = ed_txt!.getText() 
+    bytes! = QRCodes.getQRCode(string$,400,400)
+    img! = sg!.getImageManager().loadImageFromBytes(bytes!)
+    if ctrl_img! <> null()then 
+        ctrl_img!.destroy()
+    fi
+    ctrl_img! = wnd!.addImageCtrl(400,50,50,400,400,img!)
+return
+
+copy_clipboard:
+     gosub createpngfile
+     CLIPFROMFILE clipregformat("PNG"),f!.getAbsolutePath()
+     erase filename$
+return
+
+save_png:
+    if info(3,6) = "5" then
+        gosub createpngfile
+        BBjAPI().getThinClient().getClientFileSystem().getClientFile("qrcode.png").copyToClient(filename$)
+        erase filename$
+    else
+        FILTER$="PNG Files"+$0a$+"*.png"
+        cfilename$ = FILESAVE("Save PNG File","","qrcode","png",filter$,MODE="CLIENT")
+        if cfilename$(1,2)="::" then
+            return
+        fi
+        gosub createpngfile        
+        BBjAPI().getThinClient().getClientFileSystem().getClientFile(cfilename$).copyToClient(filename$)
+    fi
+     
+return
+
+createpngfile:
+     filename$ = java.io.File.createTempFile("clip_",".png",null()).getAbsolutePath()
+     ch=unt
+     open (ch)filename$
+     write (ch) bytes!
+     close (ch)
+return

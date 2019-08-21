@@ -1,0 +1,16 @@
+{
+  "name": "QRCodes",
+  "description": "The QRCodes Plugin allows the creation of QR Codes directly from BBj",
+  "version": "0.99.0",
+  "author": "BASIS Europe Distribution GmbH",
+  "licence": "MIT",
+  "bbj_dependency": "19.20",
+  "screenshots": [],
+  "plugin_dependencies": [
+    {
+      "plugin_name": "BBjWidget",
+      "plugin_version": "1.0",
+      "project_url": "https://github.com/BBj-Plugins/BBjWidget"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+use  com.google.zxing.BarcodeFormat
+use  com.google.zxing.WriterException
+use  com.google.zxing.client.j2se.MatrixToImageWriter
+use  com.google.zxing.common.BitMatrix
+use  com.google.zxing.qrcode.QRCodeWriter
+
+use java.io.ByteArrayOutputStream
+
+class public QRCodes
+
+    method public static byte[] getQRCode(BBjString string$, BBjNumber width, BBjNumber height)
+    
+        if string$="" then
+            let string$=" "
+        fi
+
+        c! = Class.forName("com.google.zxing.qrcode.QRCodeWriter",err=*next)
+        if c! = null() then
+            classloader! = new com.basiscomponents.util.JarLoader()
+            classloader!.addFile(BBjAPI().getFileSystem().resolvePath("QRCodes/lib/core-3.3.0.jar"))
+            classloader!.addFile(BBjAPI().getFileSystem().resolvePath("QRCodes/lib/javase-3.3.0.jar"))
+            c! = classloader!.loadClass("com.google.zxing.qrcode.QRCodeWriter")
+            bf! = classloader!.loadClass("com.google.zxing.BarcodeFormat")
+            mx! = classloader!.loadClass("com.google.zxing.client.j2se.MatrixToImageWriter")
+        else    
+            bf! = Class.forName("com.google.zxing.BarcodeFormat")
+            mx! = Class.forName("com.google.zxing.client.j2se.MatrixToImageWriter")
+        fi
+        
+        qrCodeWriter! = c!.newInstance()
+        bitMatrix! = qrCodeWriter!.encode(string$, bf!.getDeclaredField("QR_CODE").get(null()), width, height)
+        
+        ms! =  mx!.getMethods()
+        for i=0 to ms!.length-1
+            method! = ms![i]
+            if method!.getName() = "writeToStream"  and method!.getParameterCount() = 3 then
+                break
+            fi
+        next
+        
+        pngOutputStream! = new ByteArrayOutputStream()
+        method!.invoke(new Object(), bitMatrix!, "PNG", pngOutputStream!)
+        
+        methodret pngOutputStream!.toByteArray()
+        
+    
+    methodend
+
+classend
+
+
