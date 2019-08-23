@@ -21,19 +21,23 @@ ed_txt!         = wnd!.addEditBox(101,left+80,top+10,280,25,"https://www.basis.c
 btn_update!     = wnd!.addButton(102,left+380,top+10,80,25,"Update")
 btn_update!     .setCallback(BBjAPI.ON_BUTTON_PUSH,"show_img")
 
-btn_png!        = wnd!.addButton(103,left+50,top+480,120,25,"Save PNG")
+btn_png!        = wnd!.addButton(103,left+180,top+480,120,25,"Save PNG")
 btn_png!        .setCallback(BBjAPI.ON_BUTTON_PUSH,"save_png")
 
 wnd!            .setBackColor(BBjColor.WHITE)
 st!             .setOpaque(false)
 
 
-rem this should work after this one got resolved:
+rem PNG to Clipboard will only work after this one was resolved:
 rem https://bugzilla.basis.com/show_bug.cgi?id=32703
-rem Bug 32703 - CLIPFROMSTR and CLIPFROMFILE fail on PNG file format
-
-rem btn_clip!   = wnd!.addButton(104,left+190,480,120,25,"Copy to Clipboard")
-rem btn_clip!   .setCallback(BBjAPI.ON_BUTTON_PUSH,"copy_clipboard")
+if rev >="REV 19.10" AND info(0,4)>="Build: 08/22/2019 17:46" then
+    
+    rem CLIPFROMSTR only works in GUI for now
+    if info(3,6)<>"5" then
+        btn_clip!   = wnd!.addButton(104,left+180,top+510,120,25,"Copy to Clipboard")
+        btn_clip!   .setCallback(BBjAPI.ON_BUTTON_PUSH,"copy_clipboard")
+    fi
+fi
 
 gosub show_img
 
@@ -56,9 +60,7 @@ show_img:
 return
 
 copy_clipboard:
-     gosub createpngfile
-     CLIPFROMFILE clipregformat("PNG"),f!.getAbsolutePath()
-     erase filename$
+     CLIPFROMSTR clipregformat("png"),bytes!
 return
 
 save_png:
