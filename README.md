@@ -1,5 +1,4 @@
-# QRCodes
-BBj Library for QR Code Generation
+## BBj Library for QR Code Generation
 
 The qrcodes class allows to generate a QR code as a PNG with a single statement from BBj. The QR Code image can then be saved as a png file or copied to the clipboard (BBj GUI Only).
 
