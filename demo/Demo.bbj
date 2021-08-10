@@ -12,7 +12,7 @@ if info(3,6)="5" then
     left = BBjAPI().getSysGui().getSystemMetrics().getScreenSize().getWidth()/2-250
 else
     wnd!        = sg!.addWindow(10,10,500,600,"QR Demo",$00000012$)
-fi
+endif
 wnd!            .setCallback(BBjAPI.ON_CLOSE,"byebye")
 
 st!             = wnd!.addStaticText(100,left+50,top+15,400,25,"Text:","")
@@ -36,8 +36,8 @@ if rev >="REV 19.10" AND info(0,4)>="Build: 08/22/2019 17:46" then
     if info(3,6)<>"5" then
         btn_clip!   = wnd!.addButton(104,left+180,top+510,120,25,"Copy to Clipboard")
         btn_clip!   .setCallback(BBjAPI.ON_BUTTON_PUSH,"copy_clipboard")
-    fi
-fi
+    endif
+endif
 
 gosub show_img
 
@@ -55,7 +55,7 @@ show_img:
     img! = sg!.getImageManager().loadImageFromBytes(bytes!)
     if ctrl_img! <> null()then 
         ctrl_img!.destroy()
-    fi
+    endif
     ctrl_img! = wnd!.addImageCtrl(400,left+50,top+50,400,400,img!)
 return
 
@@ -73,10 +73,10 @@ save_png:
         cfilename$ = FILESAVE("Save PNG File","","qrcode","png",filter$,MODE="CLIENT")
         if cfilename$(1,2)="::" then
             return
-        fi
+        endif
         gosub createpngfile        
         BBjAPI().getThinClient().getClientFileSystem().getClientFile(cfilename$).copyToClient(filename$)
-    fi
+    endif
      
 return
 

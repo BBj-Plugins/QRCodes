@@ -12,8 +12,8 @@ class public QRCodes
     
         if string$="" then
             let string$=" "
-        fi
-
+        endif
+        
         c! = Class.forName("com.google.zxing.qrcode.QRCodeWriter",err=*next)
         if c! = null() then
             classloader! = new com.basiscomponents.util.JarLoader(err=classpath_err)
@@ -25,7 +25,7 @@ class public QRCodes
         else    
             bf! = Class.forName("com.google.zxing.BarcodeFormat")
             mx! = Class.forName("com.google.zxing.client.j2se.MatrixToImageWriter")
-        fi
+        endif
         
         qrCodeWriter! = c!.newInstance()
         bitMatrix! = qrCodeWriter!.encode(string$, bf!.getDeclaredField("QR_CODE").get(null()), width, height)
@@ -35,7 +35,7 @@ class public QRCodes
             method! = ms![i]
             if method!.getName() = "writeToStream"  and method!.getParameterCount() = 3 then
                 break
-            fi
+            endif
         next
         
         pngOutputStream! = new ByteArrayOutputStream()
